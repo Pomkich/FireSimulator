@@ -1,12 +1,8 @@
 #include <iostream>
 #include <array>
-
+#include "Constants.h"
 
 using namespace std;
-
-enum class Tile {
-	empty = 0, water, forest
-};
 
 void Draw(array<array<Tile, 10>, 10> &tiles) {
 	for (auto& row : tiles) {
