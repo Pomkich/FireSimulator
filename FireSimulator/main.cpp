@@ -40,12 +40,12 @@ int start_tiles[10][10] = {
 */
 
 void calculateFront(array<array<Cell, 20>, 20> tiles) {
-	int x_burn, y_burn;
-	double a, b, c;
-	double omega = 1.7;	// area code 303
-	double wind_speed = 10;	// скорость ветра м/с
+	double x_burn, y_burn;		// начальные координаты точки горения
+	double a, b, c;	// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c)
+	double omega = 20.5;	// скорость распространения фронта пожара по модели Ротермела (на данный момент не считается)
+	double wind_speed = 4;	// скорость ветра м/с
 	double LB, HB;	// константы, рассчитываемые для каждой точки горения
-	x_burn = 10;	// начальные координаты точки горения
+	x_burn = 10;
 	y_burn = 10;
 
 	LB = 0.936 * exp(0.2566 * wind_speed) + 0.461 * exp(-0.1548 * wind_speed) - 0.397;
@@ -58,12 +58,10 @@ void calculateFront(array<array<Cell, 20>, 20> tiles) {
 	cout << LB << "   " << HB << endl;
 	cout << a << "   " << b << "   " << c << endl;
 
-	//a = 2;
-	//b = 6;
-	/*for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			if ((pow(i - x_burn, 2) / pow(a, 2) + pow(j - y_burn, 2) / pow(b, 2)) <= 1) {
-				tiles[i][j].state = BurnState::on_fire;
+	for (int y = 0; y < 20; y++) {
+		for (int x = 0; x < 20; x++) {
+			if ((pow(y - y_burn, 2) / pow(a, 2) + pow(x - x_burn - c, 2) / pow(b, 2)) <= 1) {
+				tiles[y][x].state = BurnState::on_fire;
 			}
 		}
 	}
@@ -73,7 +71,7 @@ void calculateFront(array<array<Cell, 20>, 20> tiles) {
 			cout << static_cast<int>(tiles[i][j].state) << " ";
 		}
 		cout << endl;
-	}*/
+	}
 }
 
 
