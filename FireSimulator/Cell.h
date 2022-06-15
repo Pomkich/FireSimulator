@@ -1,11 +1,18 @@
 #pragma once
 #include "Constants.h"
 
+enum class Tile {
+	empty = 0, water, forest
+};
+
+enum class BurnState {
+	not_burned, burned, on_fire
+};
+
 struct Cell {
 	Tile type;
-	int damage;
-	int burning_rate;
+	BurnState state;
 
-	Cell();
-	void Update();
+	Cell() = default;
+	Cell(Tile t) : type(t), state(BurnState::not_burned) {};
 };
