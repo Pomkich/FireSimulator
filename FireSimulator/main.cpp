@@ -12,8 +12,8 @@ array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int 
 	//double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
-	double wind_speed = 6;		// скорость ветра м/с
-	double wind_angle = 90;		// направление ветра, рассчитываемое в градусах
+	double wind_speed = 2;		// скорость ветра м/с
+	double wind_angle = 180;		// направление ветра, рассчитываемое в градусах
 
 	// константы, необходимые для расчёта скорости распространения фронта пожара
 	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
@@ -43,11 +43,12 @@ array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int 
 
 	for (int y = 0; y < 20; y++) {
 		for (int x = 0; x < 20; x++) {
-			double rotated_x = (double(x - x_burn) - c) * cos(wind_angle * pi / 180) + double(y - y_burn) * sin(wind_angle * pi / 180);	// поворот в сторону направления ветра
-			double rotated_y = double(y - y_burn) * cos(wind_angle * pi / 180) - (double(x - x_burn) - c) * sin(wind_angle * pi / 180);
-			// сравнение с числом определяет масштаб, сейчас увеличение в 10000 раз, площадь клетки - метр квадратный
+			double rotated_x = (double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) + // поворот в сторону направления ветра
+				double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * sin(wind_angle * pi / 180);
+			double rotated_y = double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * cos(wind_angle * pi / 180) -
+				(double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
 
-			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 10000) {
+			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
 				tiles[y][x].state = BurnState::on_fire;
 			}
 		}
