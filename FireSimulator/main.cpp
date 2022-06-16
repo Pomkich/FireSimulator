@@ -1,52 +1,19 @@
 #include <iostream>
 #include <array>
+#include <vector>
 #include "Constants.h"
 #include "Cell.h"
 
 using namespace std;
 
-/*
-river and forest with empty fields
-int start_tiles[10][10] = {
-		{0, 0, 0, 1, 1, 2, 2, 2, 2, 2},
-		{0, 0, 0, 1, 1, 2, 2, 2, 2, 2},
-		{0, 0, 1, 1, 1, 2, 2, 2, 2, 0},
-		{0, 0, 1, 1, 2, 2, 2, 2, 0, 0},
-		{0, 0, 0, 1, 1, 2, 2, 2, 2, 0},
-		{0, 0, 0, 1, 1, 1, 0, 0, 2, 2},
-		{0, 0, 0, 0, 1, 1, 2, 2, 2, 2},
-		{0, 0, 0, 1, 1, 2, 0, 2, 2, 2},
-		{0, 0, 1, 1, 0, 2, 0, 0, 2, 2},
-		{0, 0, 0, 1, 1, 2, 2, 0, 2, 2},
-	};
-
-*/
-
-/*
-river and forest with empty fields
-int start_tiles[10][10] = {
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-	};
-
-*/
-
 static const double pi = 3.14159265;
 
-void calculateFront(array<array<Cell, 20>, 20> tiles) {
-	double x_burn, y_burn;		// начальные координаты точки горения
+array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int x_burn, int y_burn) {
+	//double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
-	double wind_speed = 4;		// скорость ветра м/с
-	double wind_angle = 60;		// направление ветра, рассчитываемое в градусах
+	double wind_speed = 6;		// скорость ветра м/с
+	double wind_angle = 90;		// направление ветра, рассчитываемое в градусах
 
 	// константы, необходимые для расчёта скорости распространения фронта пожара
 	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
@@ -72,26 +39,29 @@ void calculateFront(array<array<Cell, 20>, 20> tiles) {
 	a = b / LB;
 	c = b - (wind_factor / LB);
 
-	x_burn = 10;
-	y_burn = 10;
+	//cout << a << "   " << b << "   " << c << endl;
 
 	for (int y = 0; y < 20; y++) {
 		for (int x = 0; x < 20; x++) {
-			double rotated_x = (x - x_burn - c) * cos(wind_angle * pi / 180) + (y - y_burn) * sin(wind_angle * pi / 180);	// поворот в сторону направления ветра
-			double rotated_y = (y - y_burn) * cos(wind_angle * pi / 180) - (x - x_burn - c) * sin(wind_angle * pi / 180);
+			double rotated_x = (double(x - x_burn) - c) * cos(wind_angle * pi / 180) + double(y - y_burn) * sin(wind_angle * pi / 180);	// поворот в сторону направления ветра
+			double rotated_y = double(y - y_burn) * cos(wind_angle * pi / 180) - (double(x - x_burn) - c) * sin(wind_angle * pi / 180);
 			// сравнение с числом определяет масштаб, сейчас увеличение в 10000 раз, площадь клетки - метр квадратный
+
 			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 10000) {
 				tiles[y][x].state = BurnState::on_fire;
 			}
 		}
 	}
 
-	for (int i = 0; i < 20; i++) {
+	/*for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 20; j++) {
 			cout << static_cast<int>(tiles[i][j].state) << " ";
 		}
 		cout << endl;
 	}
+	cout << "=========================================" << endl;
+	*/
+	return tiles;
 }
 
 
@@ -127,22 +97,34 @@ int main() {
 		}
 	}
 
-	//cout << sin(30*pi/180) << endl;
-	/*for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			cout << static_cast<int>(tiles[i][j].type) << " ";
-		}
-		cout << endl;
-	}
-	cout << "============================" << endl;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			cout << static_cast<int>(tiles[i][j].state) << " ";
-		}
-		cout << endl;
-	}*/
+	vector<pair<int, int>> points;
 
-	calculateFront(tiles);
+	tiles = calculateFront(tiles, 10, 10);
+
+	for (int i = 0; i < 3; i++) {
+		for (int y = 0; y < 20; y++) {
+			for (int x = 0; x < 20; x++) {
+				if (tiles[y][x].state == BurnState::on_fire) {
+					points.push_back(make_pair(x, y));
+				}
+			}
+		}
+
+		for (auto& point : points) {
+			tiles = calculateFront(tiles, point.first, point.second);
+		}
+
+		for (int c = 0; c < 20; c++) {
+			for (int j = 0; j < 20; j++) {
+				cout << static_cast<int>(tiles[c][j].state) << " ";
+			}
+			cout << endl;
+		}
+		cout << "=========================================" << endl;
+		
+		points.clear();
+	}
+	
 
 	return 0;
 }
