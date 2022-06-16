@@ -44,29 +44,43 @@ static const double pi = 3.14159265;
 void calculateFront(array<array<Cell, 20>, 20> tiles) {
 	double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
-	double omega = 10;			// скорость распространения фронта пожара по модели Ротермела (на данный момент не рассчитывается)
-	double wind_speed = 5;		// скорость ветра м/с
-	double wind_angle = 90;		// направление ветра, рассчитываемое в градусах
-	double LB, HB;				// константы, рассчитываемые для каждой точки горения
-	x_burn = 10;
-	y_burn = 10;
+	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
+	double wind_speed = 4;		// скорость ветра м/с
+	double wind_angle = 60;		// направление ветра, рассчитываемое в градусах
 
+	// константы, необходимые для расчёта скорости распространения фронта пожара
+	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
+	double fuel_load = 1.7;				// w0
+	double fuel_depth = 0.12;			// delta
+	double stv_ratio = 2000;			// sigma
+	double particle_dens = 300;			// p
+
+	double B = 0.0133 * pow(stv_ratio, 0.54);
+	double C = 7.47 * exp(-0.0693 * pow(stv_ratio, 0.55));
+	double E = 0.715 * exp(-0.0001079 * stv_ratio);
+
+	double packing_ratio = fuel_load / fuel_depth / particle_dens;	// beta
+	double opm_packing_ratio = 3.348 * pow(stv_ratio, -0.8189);		// beta op
+
+	wind_factor = C * pow(wind_speed, B) * pow((packing_ratio / opm_packing_ratio), -E);
+
+	double LB, HB;				// переменные для расчёта формы эллипса
 	LB = 0.936 * exp(0.2566 * wind_speed) + 0.461 * exp(-0.1548 * wind_speed) - 0.397;
 	HB = (LB + sqrt(LB * LB - 1)) / (LB - sqrt(LB * LB - 1));
 
-	b = (omega / 2) * ((1 + HB) / HB);
+	b = (wind_factor / 2) * ((1 + HB) / HB);
 	a = b / LB;
-	c = b - (omega / LB);
+	c = b - (wind_factor / LB);
 
-	cout << LB << "   " << HB << endl;
-	cout << a << "   " << b << "   " << c << endl;
+	x_burn = 10;
+	y_burn = 10;
 
 	for (int y = 0; y < 20; y++) {
 		for (int x = 0; x < 20; x++) {
 			double rotated_x = (x - x_burn - c) * cos(wind_angle * pi / 180) + (y - y_burn) * sin(wind_angle * pi / 180);	// поворот в сторону направления ветра
 			double rotated_y = (y - y_burn) * cos(wind_angle * pi / 180) - (x - x_burn - c) * sin(wind_angle * pi / 180);
-
-			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
+			// сравнение с числом определяет масштаб, сейчас увеличение в 10000 раз, площадь клетки - метр квадратный
+			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 10000) {
 				tiles[y][x].state = BurnState::on_fire;
 			}
 		}
@@ -113,7 +127,7 @@ int main() {
 		}
 	}
 
-	cout << sin(30*pi/180) << endl;
+	//cout << sin(30*pi/180) << endl;
 	/*for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			cout << static_cast<int>(tiles[i][j].type) << " ";
