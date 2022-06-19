@@ -7,8 +7,10 @@
 using namespace std;
 
 static const double pi = 3.14159265;
+const int mesh_size = 40;
 
-array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int x_burn, int y_burn) {
+array<array<Cell, mesh_size>, mesh_size>
+calculateFront(array<array<Cell, mesh_size>, mesh_size> tiles, int x_burn, int y_burn) {
 	//double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
@@ -41,8 +43,8 @@ array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int 
 
 	//cout << a << "   " << b << "   " << c << endl;
 
-	for (int y = 0; y < 20; y++) {
-		for (int x = 0; x < 20; x++) {
+	for (int y = 0; y < mesh_size; y++) {
+		for (int x = 0; x < mesh_size; x++) {
 			double rotated_x = (double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) + // поворот в сторону направления ветра
 				double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * sin(wind_angle * pi / 180);
 			double rotated_y = double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * cos(wind_angle * pi / 180) -
@@ -68,8 +70,8 @@ array<array<Cell, 20>, 20> calculateFront(array<array<Cell, 20>, 20> tiles, int 
 
 
 int main() {
-	array<array<Cell, 20>, 20> tiles;
-	int start_tiles[20][20] = {
+	array<array<Cell, mesh_size>, mesh_size> tiles;
+	/*int start_tiles[20][20] = {
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -90,11 +92,12 @@ int main() {
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-	};
+	};*/
 
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			tiles[i][j] = Cell(static_cast<Tile>(start_tiles[i][j]));
+	for (int i = 0; i < mesh_size; i++) {
+		for (int j = 0; j < mesh_size; j++) {
+			//tiles[i][j] = Cell(static_cast<Tile>(start_tiles[i][j]));
+			tiles[i][j] = Cell(Tile::forest);
 		}
 	}
 
@@ -103,8 +106,8 @@ int main() {
 	tiles = calculateFront(tiles, 10, 10);
 
 	for (int i = 0; i < 3; i++) {
-		for (int y = 0; y < 20; y++) {
-			for (int x = 0; x < 20; x++) {
+		for (int y = 0; y < mesh_size; y++) {
+			for (int x = 0; x < mesh_size; x++) {
 				if (tiles[y][x].state == BurnState::on_fire) {
 					points.push_back(make_pair(x, y));
 				}
@@ -115,8 +118,8 @@ int main() {
 			tiles = calculateFront(tiles, point.first, point.second);
 		}
 
-		for (int c = 0; c < 20; c++) {
-			for (int j = 0; j < 20; j++) {
+		for (int c = 0; c < mesh_size; c++) {
+			for (int j = 0; j < mesh_size; j++) {
 				cout << static_cast<int>(tiles[c][j].state) << " ";
 			}
 			cout << endl;
