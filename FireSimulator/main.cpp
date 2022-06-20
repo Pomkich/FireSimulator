@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Cell.h"
 #include "SFML/Graphics.hpp"
+#include <thread>
 
 
 using namespace std;
@@ -17,7 +18,7 @@ calculateFront(array<array<Cell, mesh_size>, mesh_size> tiles, int x_burn, int y
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
 	double wind_speed = 2;		// скорость ветра м/с
-	double wind_angle = 180;		// направление ветра, рассчитываемое в градусах
+	double wind_angle = 0;		// направление ветра, рассчитываемое в градусах
 
 	// константы, необходимые для расчёта скорости распространения фронта пожара
 	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
@@ -82,7 +83,7 @@ int main() {
 
 	vector<pair<int, int>> points;
 
-	tiles = calculateFront(tiles, 10, 10);
+	/*tiles = calculateFront(tiles, 10, 10);
 
 	for (int i = 0; i < 3; i++) {
 		for (int y = 0; y < mesh_size; y++) {
@@ -106,9 +107,10 @@ int main() {
 		cout << "=========================================" << endl;
 		
 		points.clear();
-	}
+	}*/
 
-
+	
+	tiles = calculateFront(tiles, 10, 10);
 
 	sf::RenderWindow window(sf::VideoMode(600, 700), "Fire Simulator");
 
@@ -144,6 +146,28 @@ int main() {
 			}
 		}
 		window.display();
+
+		for (int y = 0; y < mesh_size; y++) {
+			for (int x = 0; x < mesh_size; x++) {
+				if (tiles[y][x].state == BurnState::on_fire) {
+					rectangles[x][y].setFillColor(sf::Color::Red);
+				}
+			}
+		}
+
+		for (int y = 0; y < mesh_size; y++) {
+			for (int x = 0; x < mesh_size; x++) {
+				if (tiles[y][x].state == BurnState::on_fire) {
+					points.push_back(make_pair(x, y));
+				}
+			}
+		}
+
+		for (auto& point : points) {
+			tiles = calculateFront(tiles, point.first, point.second);
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
 
 	return 0;
