@@ -59,8 +59,8 @@ void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_bu
 	for (int y = height_min; y < height_max; y++) {
 		for (int x = width_min; x < width_max; x++) {
 			double rotated_x = (double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) + // поворот в сторону направления ветра
-				double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * sin(wind_angle * pi / 180);
-			double rotated_y = double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * cos(wind_angle * pi / 180) -
+				(double(y - y_burn) / 100 - c * sin(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
+			double rotated_y = (double(y - y_burn) / 100 - c * sin(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) -
 				(double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
 
 			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1 && tiles[y][x]->state == BurnState::not_burned) {
@@ -80,10 +80,12 @@ int main() {
 		tiles[i].resize(mesh_size);
 		for (int j = 0; j < mesh_size; j++) {
 			tiles[i][j] = make_shared<Cell>(Tile::forest);
+			tiles[i][j]->wind_angle = -90;
+			tiles[i][j]->wind_speed = 5;
 		}
 	}
 
-	for (int i = 0; i < mesh_size / 2; i++) {
+	/*for (int i = 0; i < mesh_size / 2; i++) {
 		for (int j = 0; j < mesh_size / 2; j++) {
 			tiles[i][j]->wind_angle = 30;
 			tiles[i][j]->wind_speed = 4;
@@ -110,7 +112,7 @@ int main() {
 			tiles[i][j]->wind_speed = 6;
 		}
 	}
-
+	*/
 	
 
 	vector<pair<int, int>> points;
