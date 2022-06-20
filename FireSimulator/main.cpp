@@ -5,6 +5,7 @@
 #include "Cell.h"
 #include "SFML/Graphics.hpp"
 #include <thread>
+#include <algorithm>
 
 
 using namespace std;
@@ -14,11 +15,10 @@ const int mesh_size = 100;
 
 
 void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_burn) {
-	//double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
-	double wind_speed = 2;		// скорость ветра м/с
-	double wind_angle = 0;		// направление ветра, рассчитываемое в градусах
+	double wind_speed = 3;		// скорость ветра м/с
+	double wind_angle = 30;		// направление ветра, рассчитываемое в градусах
 
 	// константы, необходимые для расчёта скорости распространения фронта пожара
 	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
@@ -43,17 +43,27 @@ void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_bu
 	b = (wind_factor / 2) * ((1 + HB) / HB);
 	a = b / LB;
 	c = b - (wind_factor / LB);
-
+	
 	//cout << a << "   " << b << "   " << c << endl;
 
-	for (int y = 0; y < mesh_size; y++) {
-		for (int x = 0; x < mesh_size; x++) {
+	//double width = a * cos(wind_angle * pi / 180);
+
+	//cout << width << endl;
+	
+	// проверяем только в 1/10 от площади а не всей сетки для оптимизации
+	int height_min = (y_burn - 5) > 0 ? y_burn - 5 : 0;
+	int height_max = (y_burn + 5) < 100 ? y_burn + 5 : 99;
+	int width_min = (x_burn - 5) > 0 ? x_burn - 5 : 0;
+	int width_max = (x_burn + 5) < 100 ? x_burn + 5 : 99;
+
+	for (int y = height_min; y < height_max; y++) {
+		for (int x = width_min; x < width_max; x++) {
 			double rotated_x = (double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) + // поворот в сторону направления ветра
 				double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * sin(wind_angle * pi / 180);
 			double rotated_y = double(y - y_burn - c * sin(wind_angle * pi / 180)) / 100 * cos(wind_angle * pi / 180) -
 				(double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
 
-			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
+			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1 && tiles[y][x]->state == BurnState::not_burned) {
 				tiles[y][x]->state = BurnState::on_fire;
 			}
 		}
@@ -74,9 +84,9 @@ int main() {
 	}
 
 	vector<pair<int, int>> points;
-	calculateFront(tiles, 10, 10);
-	calculateFront(tiles, 20, 10);
-	calculateFront(tiles, 30, 10);
+	calculateFront(tiles, 40, 30);
+	calculateFront(tiles, 50, 53);
+	calculateFront(tiles, 60, 60);
 
 	sf::RenderWindow window(sf::VideoMode(600, 700), "Fire Simulator");
 
@@ -120,6 +130,9 @@ int main() {
 				if (tiles[y][x]->state == BurnState::on_fire) {
 					rectangles[x][y].setFillColor(sf::Color::Red);
 				}
+				else if (tiles[y][x]->state == BurnState::burned) {
+					rectangles[x][y].setFillColor(sf::Color::Black);
+				}
 			}
 		}
 
@@ -127,6 +140,7 @@ int main() {
 			for (int x = 0; x < mesh_size; x++) {
 				if (tiles[y][x]->state == BurnState::on_fire) {
 					points.push_back(make_pair(x, y));
+					tiles[y][x]->state = BurnState::burned;
 				}
 			}
 		}
@@ -134,8 +148,7 @@ int main() {
 		for (auto& point : points) {
 			calculateFront(tiles, point.first, point.second);
 		}
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+		//std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
 
 	return 0;
