@@ -10,10 +10,10 @@
 using namespace std;
 
 static const double pi = 3.14159265;
-const int mesh_size = 40;
+const int mesh_size = 100;
 
-array<array<Cell, mesh_size>, mesh_size>
-calculateFront(array<array<Cell, mesh_size>, mesh_size> tiles, int x_burn, int y_burn) {
+
+void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_burn) {
 	//double x_burn, y_burn;		// начальные координаты точки горения
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
@@ -54,69 +54,37 @@ calculateFront(array<array<Cell, mesh_size>, mesh_size> tiles, int x_burn, int y
 				(double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
 
 			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
-				tiles[y][x].state = BurnState::on_fire;
+				tiles[y][x]->state = BurnState::on_fire;
 			}
 		}
 	}
-
-	/*for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			cout << static_cast<int>(tiles[i][j].state) << " ";
-		}
-		cout << endl;
-	}
-	cout << "=========================================" << endl;
-	*/
-	return tiles;
 }
 
 
 
 int main() {
-	array<array<Cell, mesh_size>, mesh_size> tiles;
+	vector<vector<shared_ptr<Cell>>> tiles;
+	tiles.resize(mesh_size);
 
 	for (int i = 0; i < mesh_size; i++) {
+		tiles[i].resize(mesh_size);
 		for (int j = 0; j < mesh_size; j++) {
-			tiles[i][j] = Cell(Tile::forest);
+			tiles[i][j] = make_shared<Cell>(Tile::forest);
 		}
 	}
 
 	vector<pair<int, int>> points;
-
-	/*tiles = calculateFront(tiles, 10, 10);
-
-	for (int i = 0; i < 3; i++) {
-		for (int y = 0; y < mesh_size; y++) {
-			for (int x = 0; x < mesh_size; x++) {
-				if (tiles[y][x].state == BurnState::on_fire) {
-					points.push_back(make_pair(x, y));
-				}
-			}
-		}
-
-		for (auto& point : points) {
-			tiles = calculateFront(tiles, point.first, point.second);
-		}
-
-		for (int c = 0; c < mesh_size; c++) {
-			for (int j = 0; j < mesh_size; j++) {
-				cout << static_cast<int>(tiles[c][j].state) << " ";
-			}
-			cout << endl;
-		}
-		cout << "=========================================" << endl;
-		
-		points.clear();
-	}*/
-
-	
-	tiles = calculateFront(tiles, 10, 10);
+	calculateFront(tiles, 10, 10);
+	calculateFront(tiles, 20, 10);
+	calculateFront(tiles, 30, 10);
 
 	sf::RenderWindow window(sf::VideoMode(600, 700), "Fire Simulator");
 
-	array<array<sf::RectangleShape, mesh_size>, mesh_size> rectangles;
+	vector<vector<sf::RectangleShape>> rectangles;
+	rectangles.resize(mesh_size);
 	const int rect_size = window.getSize().x / mesh_size;
 	for (int i = 0; i < mesh_size; i++) {
+		rectangles[i].resize(mesh_size);
 		for (int j = 0; j < mesh_size; j++) {
 			rectangles[i][j].setPosition(i*rect_size, j* rect_size + 100);
 			rectangles[i][j].setFillColor(sf::Color::Green);
@@ -149,7 +117,7 @@ int main() {
 
 		for (int y = 0; y < mesh_size; y++) {
 			for (int x = 0; x < mesh_size; x++) {
-				if (tiles[y][x].state == BurnState::on_fire) {
+				if (tiles[y][x]->state == BurnState::on_fire) {
 					rectangles[x][y].setFillColor(sf::Color::Red);
 				}
 			}
@@ -157,14 +125,14 @@ int main() {
 
 		for (int y = 0; y < mesh_size; y++) {
 			for (int x = 0; x < mesh_size; x++) {
-				if (tiles[y][x].state == BurnState::on_fire) {
+				if (tiles[y][x]->state == BurnState::on_fire) {
 					points.push_back(make_pair(x, y));
 				}
 			}
 		}
 
 		for (auto& point : points) {
-			tiles = calculateFront(tiles, point.first, point.second);
+			calculateFront(tiles, point.first, point.second);
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
