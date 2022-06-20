@@ -3,6 +3,8 @@
 #include <vector>
 #include "Constants.h"
 #include "Cell.h"
+#include "SFML/Graphics.hpp"
+
 
 using namespace std;
 
@@ -71,32 +73,9 @@ calculateFront(array<array<Cell, mesh_size>, mesh_size> tiles, int x_burn, int y
 
 int main() {
 	array<array<Cell, mesh_size>, mesh_size> tiles;
-	/*int start_tiles[20][20] = {
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-	};*/
 
 	for (int i = 0; i < mesh_size; i++) {
 		for (int j = 0; j < mesh_size; j++) {
-			//tiles[i][j] = Cell(static_cast<Tile>(start_tiles[i][j]));
 			tiles[i][j] = Cell(Tile::forest);
 		}
 	}
@@ -128,7 +107,45 @@ int main() {
 		
 		points.clear();
 	}
-	
+
+
+
+	sf::RenderWindow window(sf::VideoMode(600, 700), "Fire Simulator");
+
+	array<array<sf::RectangleShape, mesh_size>, mesh_size> rectangles;
+	const int rect_size = window.getSize().x / mesh_size;
+	for (int i = 0; i < mesh_size; i++) {
+		for (int j = 0; j < mesh_size; j++) {
+			rectangles[i][j].setPosition(i*rect_size, j* rect_size + 100);
+			rectangles[i][j].setFillColor(sf::Color::Green);
+			rectangles[i][j].setOutlineColor(sf::Color::Black);
+			rectangles[i][j].setOutlineThickness(2);
+			rectangles[i][j].setSize(sf::Vector2f(rect_size, rect_size));
+		}
+	}
+
+	// run the program as long as the window is open
+	while (window.isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		window.clear(sf::Color::White);
+
+		for (int i = 0; i < mesh_size; i++) {
+			for (int j = 0; j < mesh_size; j++) {
+				window.draw(rectangles[i][j]);
+
+			}
+		}
+		window.display();
+	}
 
 	return 0;
+
 }
