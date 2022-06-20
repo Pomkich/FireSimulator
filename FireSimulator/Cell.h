@@ -10,6 +10,8 @@ enum class BurnState {
 };
 
 struct Cell {
+	double wind_speed;
+	double wind_angle;
 	Tile type;
 	BurnState state;
 

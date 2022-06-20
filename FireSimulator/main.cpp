@@ -17,8 +17,8 @@ const int mesh_size = 100;
 void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_burn) {
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
-	double wind_speed = 3;		// скорость ветра м/с
-	double wind_angle = 30;		// направление ветра, рассчитываемое в градусах
+	double wind_speed = tiles[x_burn][y_burn]->wind_speed;		// скорость ветра м/с
+	double wind_angle = tiles[x_burn][y_burn]->wind_angle;		// направление ветра, рассчитываемое в градусах
 
 	// константы, необходимые для расчёта скорости распространения фронта пожара
 	// на данный момент соответстуют местности с кодом 303 (лишайники, сосновый лес редкий, деревья молодые и средневозрастные)
@@ -51,10 +51,10 @@ void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_bu
 	//cout << width << endl;
 	
 	// проверяем только в 1/10 от площади а не всей сетки для оптимизации
-	int height_min = (y_burn - 5) > 0 ? y_burn - 5 : 0;
-	int height_max = (y_burn + 5) < 100 ? y_burn + 5 : 99;
-	int width_min = (x_burn - 5) > 0 ? x_burn - 5 : 0;
-	int width_max = (x_burn + 5) < 100 ? x_burn + 5 : 99;
+	int height_min = (y_burn - 10) > 0 ? y_burn - 10 : 0;
+	int height_max = (y_burn + 10) < 100 ? y_burn + 10 : 100;
+	int width_min = (x_burn - 10) > 0 ? x_burn - 10 : 0;
+	int width_max = (x_burn + 10) < 100 ? x_burn + 10 : 100;
 
 	for (int y = height_min; y < height_max; y++) {
 		for (int x = width_min; x < width_max; x++) {
@@ -83,6 +83,36 @@ int main() {
 		}
 	}
 
+	for (int i = 0; i < mesh_size / 2; i++) {
+		for (int j = 0; j < mesh_size / 2; j++) {
+			tiles[i][j]->wind_angle = 30;
+			tiles[i][j]->wind_speed = 4;
+		}
+	}
+
+	for (int i = mesh_size / 2; i < mesh_size; i++) {
+		for (int j = 0; j < mesh_size / 2; j++) {
+			tiles[i][j]->wind_angle = 135;
+			tiles[i][j]->wind_speed = 6;
+		}
+	}
+
+	for (int i = 0; i < mesh_size / 2; i++) {
+		for (int j = mesh_size / 2; j < mesh_size; j++) {
+			tiles[i][j]->wind_angle = -69;
+			tiles[i][j]->wind_speed = 2;
+		}
+	}
+
+	for (int i = mesh_size / 2; i < mesh_size; i++) {
+		for (int j = mesh_size / 2; j < mesh_size; j++) {
+			tiles[i][j]->wind_angle = 43;
+			tiles[i][j]->wind_speed = 6;
+		}
+	}
+
+	
+
 	vector<pair<int, int>> points;
 	calculateFront(tiles, 40, 30);
 	calculateFront(tiles, 50, 53);
@@ -98,8 +128,6 @@ int main() {
 		for (int j = 0; j < mesh_size; j++) {
 			rectangles[i][j].setPosition(i*rect_size, j* rect_size + 100);
 			rectangles[i][j].setFillColor(sf::Color::Green);
-			rectangles[i][j].setOutlineColor(sf::Color::Black);
-			rectangles[i][j].setOutlineThickness(2);
 			rectangles[i][j].setSize(sf::Vector2f(rect_size, rect_size));
 		}
 	}
