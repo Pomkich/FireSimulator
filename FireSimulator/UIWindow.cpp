@@ -1,4 +1,4 @@
-#include "UIWidnow.h"
+#include "UIWindow.h"
 
 UIWindow::UIWindow(int width, int height) {
 	render_window.create(sf::VideoMode(width, height), "simulator");
@@ -20,6 +20,16 @@ void UIWindow::Run() {
 			}
 		}
 		render_window.clear(sf::Color::White);
+
+		for (auto& button : buttons) {
+			render_window.draw(button.GetRect());
+			render_window.draw(button.GetTitle());
+		}
+
 		render_window.display();
 	}
+}
+
+void UIWindow::AddButton(UIButton new_button) {
+	buttons.push_back(new_button);
 }

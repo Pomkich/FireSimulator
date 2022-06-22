@@ -6,7 +6,7 @@
 #include "SFML/Graphics.hpp"
 #include <thread>
 #include <algorithm>
-
+#include "UIWindow.h"
 
 using namespace std;
 
@@ -73,7 +73,19 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 
 
 int main() {
-	vector<vector<shared_ptr<Cell>>> tiles;
+	shared_ptr<UIWindow> wnd = make_shared<UIWindow>(800, 600);
+	{
+		UIButton test(wnd);
+		test.SetSize(200, 100);
+		test.SetTitle("test");
+		test.SetPos(300, 250);
+		test.SetColor(sf::Color::Green);
+		wnd->AddButton(test);
+	}
+	wnd->Run();
+
+
+	/*vector<vector<shared_ptr<Cell>>> tiles;
 	tiles.resize(mesh_size);
 
 	for (int i = 0; i < mesh_size; i++) {
@@ -84,36 +96,6 @@ int main() {
 			tiles[i][j]->wind_speed = 4;
 		}
 	}
-
-	/*for (int i = 0; i < mesh_size / 2; i++) {
-		for (int j = 0; j < mesh_size / 2; j++) {
-			tiles[i][j]->wind_angle = 30;
-			tiles[i][j]->wind_speed = 4;
-		}
-	}
-
-	for (int i = mesh_size / 2; i < mesh_size; i++) {
-		for (int j = 0; j < mesh_size / 2; j++) {
-			tiles[i][j]->wind_angle = 135;
-			tiles[i][j]->wind_speed = 6;
-		}
-	}
-
-	for (int i = 0; i < mesh_size / 2; i++) {
-		for (int j = mesh_size / 2; j < mesh_size; j++) {
-			tiles[i][j]->wind_angle = -69;
-			tiles[i][j]->wind_speed = 2;
-		}
-	}
-
-	for (int i = mesh_size / 2; i < mesh_size; i++) {
-		for (int j = mesh_size / 2; j < mesh_size; j++) {
-			tiles[i][j]->wind_angle = 43;
-			tiles[i][j]->wind_speed = 6;
-		}
-	}
-	*/
-	
 
 	vector<pair<int, int>> points;
 	calculateFront(tiles, 40, 30);
@@ -155,6 +137,7 @@ int main() {
 		}
 		window.display();
 
+		// раскрашиваем клетки в зависимости от их состояния
 		for (int y = 0; y < mesh_size; y++) {
 			for (int x = 0; x < mesh_size; x++) {
 				if (tiles[y][x]->state == BurnState::on_fire) {
@@ -166,6 +149,8 @@ int main() {
 			}
 		}
 
+		// собираем список клеток, для которых нужно вычислить площадь горения
+		// и помечаем их как сгоревшие
 		for (int y = 0; y < mesh_size; y++) {
 			for (int x = 0; x < mesh_size; x++) {
 				if (tiles[y][x]->state == BurnState::on_fire) {
@@ -175,6 +160,7 @@ int main() {
 			}
 		}
 
+		// вычисляем фигуры горения для точек
 		for (auto& point : points) {
 			calculateFront(tiles, point.first, point.second);
 		}
@@ -182,5 +168,5 @@ int main() {
 	}
 
 	return 0;
-
+	*/
 }

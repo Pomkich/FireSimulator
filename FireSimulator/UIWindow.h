@@ -11,6 +11,7 @@ private:
 
 public:
 	UIWindow(int width, int height);
+	void AddButton(UIButton new_button);
 	void Run();
 
 private:
