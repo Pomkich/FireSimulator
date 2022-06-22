@@ -11,10 +11,10 @@
 using namespace std;
 
 static const double pi = 3.14159265;
-const int mesh_size = 100;
+const int mesh_size = 300;
 
 
-void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_burn) {
+void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_burn) {
 	double a, b, c;				// малая полуось (a), большая полуось(b), расстояние до центра эллипса(c) от начальной точки горения
 	double wind_factor;			// скорость распространения фронта пожара по модели Ротермела
 	double wind_speed = tiles[x_burn][y_burn]->wind_speed;		// скорость ветра м/с
@@ -51,10 +51,10 @@ void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_bu
 	//cout << width << endl;
 	
 	// проверяем только в 1/10 от площади а не всей сетки для оптимизации
-	int height_min = (y_burn - 10) > 0 ? y_burn - 10 : 0;
-	int height_max = (y_burn + 10) < 100 ? y_burn + 10 : 100;
-	int width_min = (x_burn - 10) > 0 ? x_burn - 10 : 0;
-	int width_max = (x_burn + 10) < 100 ? x_burn + 10 : 100;
+	int height_min = (y_burn - 20) > 0 ? y_burn - 20 : 0;
+	int height_max = (y_burn + 20) < mesh_size ? y_burn + 20 : mesh_size;
+	int width_min = (x_burn - 20) > 0 ? x_burn - 20 : 0;
+	int width_max = (x_burn + 20) < mesh_size ? x_burn + 20 : mesh_size;
 
 	for (int y = height_min; y < height_max; y++) {
 		for (int x = width_min; x < width_max; x++) {
@@ -63,7 +63,7 @@ void calculateFront(vector<vector<shared_ptr<Cell>>> tiles, int x_burn, int y_bu
 			double rotated_y = (double(y - y_burn) / 100 - c * sin(wind_angle * pi / 180)) * cos(wind_angle * pi / 180) -
 				(double(x - x_burn) / 100 - c * cos(wind_angle * pi / 180)) * sin(wind_angle * pi / 180);
 
-			if ((pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1 && tiles[y][x]->state == BurnState::not_burned) {
+			if (tiles[y][x]->state == BurnState::not_burned && (pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
 				tiles[y][x]->state = BurnState::on_fire;
 			}
 		}
@@ -80,8 +80,8 @@ int main() {
 		tiles[i].resize(mesh_size);
 		for (int j = 0; j < mesh_size; j++) {
 			tiles[i][j] = make_shared<Cell>(Tile::forest);
-			tiles[i][j]->wind_angle = -90;
-			tiles[i][j]->wind_speed = 5;
+			tiles[i][j]->wind_angle = 45;
+			tiles[i][j]->wind_speed = 4;
 		}
 	}
 
