@@ -16,4 +16,6 @@ public:
 
 private:
 	void HandleInput(sf::Event evnt);
+
+	friend class UIButton;
 };

@@ -1,4 +1,5 @@
 #include "UIButton.h"
+#include "UIWindow.h"
 
 UIButton::UIButton(std::shared_ptr<UIWindow> w_ptr) {
 	window_ptr = w_ptr;
@@ -35,7 +36,16 @@ sf::Text& UIButton::GetTitle() {
 
 void UIButton::HandleInput(sf::Event evnt) {
 	if (input_handler != nullptr) {
-		input_handler(evnt);
+
+		if (evnt.type == sf::Event::MouseButtonPressed &&
+			rect.getGlobalBounds().contains(
+				static_cast<sf::Vector2f>(sf::Mouse::getPosition(
+					window_ptr.lock()->render_window)))
+			)
+		{
+			
+			input_handler(evnt);
+		}
 	}
 }
 

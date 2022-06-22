@@ -70,7 +70,9 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 	}
 }
 
-
+void check(sf::Event) {
+	cout << "ahahahahah" << endl;
+}
 
 int main() {
 	shared_ptr<UIWindow> wnd = make_shared<UIWindow>(800, 600);
@@ -80,6 +82,7 @@ int main() {
 		test.SetTitle("test");
 		test.SetPos(300, 250);
 		test.SetColor(sf::Color::Green);
+		test.SetInputHandler(&check);
 		wnd->AddButton(test);
 	}
 	wnd->Run();
