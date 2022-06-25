@@ -70,17 +70,17 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 	}
 }
 
-void check(sf::Event) {
-	cout << "ahahahahah" << endl;
+void check(sf::Event, std::weak_ptr<UIWindow> window) {
+	window.lock()->test();
 }
 
 int main() {
-	shared_ptr<UIWindow> wnd = make_shared<UIWindow>(800, 600);
+	shared_ptr<UIWindow> wnd = make_shared<UIWindow>(600, 700);
 	{
 		UIButton test(wnd);
-		test.SetSize(200, 100);
+		test.SetSize(75, 50);
 		test.SetTitle("test");
-		test.SetPos(300, 250);
+		test.SetPos(275, 0);
 		test.SetColor(sf::Color::Green);
 		test.SetInputHandler(&check);
 		wnd->AddButton(test);

@@ -22,7 +22,7 @@ void UIButton::SetTitle(std::string str) {
 	title.setString(str);
 }
 
-void UIButton::SetInputHandler(void (*inp_hndl)(sf::Event)) {
+void UIButton::SetInputHandler(void (*inp_hndl)(sf::Event, std::weak_ptr<UIWindow> window)) {
 	input_handler = inp_hndl;
 }
 
@@ -43,8 +43,7 @@ void UIButton::HandleInput(sf::Event evnt) {
 					window_ptr.lock()->render_window)))
 			)
 		{
-			
-			input_handler(evnt);
+			input_handler(evnt, window_ptr);
 		}
 	}
 }
