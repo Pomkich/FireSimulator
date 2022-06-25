@@ -145,11 +145,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Calculating.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calculating.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="UIButton.h" />

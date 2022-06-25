@@ -4,15 +4,15 @@
 #include "UIButton.h"
 #include <vector>
 #include "Cell.h"
-#include <iostream>
+#include "Calculating.h"
 
 class UIWindow
 {
 private:
-	const double pi = 3.14159265;
-	const int mesh_size = 300;
 	std::vector<std::vector<std::shared_ptr<Cell>>> tiles;
 	std::vector<std::vector<sf::RectangleShape>> rectangles;
+	std::vector<std::pair<int, int>> fire_points;
+	bool simulating;
 
 	sf::RenderWindow render_window;
 	std::vector<UIButton> buttons;
@@ -20,7 +20,7 @@ private:
 public:
 	UIWindow(int width, int height);
 	void AddButton(UIButton new_button);
-	void test();
+	void StartSimulation();
 	void Run();
 
 private:
