@@ -4,6 +4,9 @@
 UIButton::UIButton(std::shared_ptr<UIWindow> w_ptr) {
 	window_ptr = w_ptr;
 	input_handler = nullptr;
+
+	rect.setOutlineThickness(2);
+	rect.setOutlineColor(sf::Color::Black);
 }
 
 void UIButton::SetSize(int width, int height) {

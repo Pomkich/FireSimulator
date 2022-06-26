@@ -7,12 +7,17 @@
 #include "Calculating.h"
 #include <iostream>
 
+enum class EditState {
+	fire, water, empty, forest
+};
+
 class UIWindow
 {
 private:
 	std::vector<std::vector<std::shared_ptr<Cell>>> tiles;
 	std::vector<std::vector<sf::RectangleShape>> rectangles;
 	std::vector<std::pair<int, int>> fire_points;
+	EditState state; 
 	bool simulating;
 
 	sf::RenderWindow render_window;
@@ -22,6 +27,7 @@ public:
 	UIWindow(int width, int height);
 	void AddButton(UIButton new_button);
 	void StartSimulation();
+	void SetEditState(EditState st);
 	void Run();
 
 private:

@@ -50,6 +50,10 @@ void UIWindow::StartSimulation() {
 	simulating = true;
 }
 
+void UIWindow::SetEditState(EditState st) {
+	state = st;
+}
+
 void UIWindow::Run() {
 	while (render_window.isOpen()) {
 		sf::Event evnt;
