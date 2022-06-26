@@ -4,7 +4,9 @@ using namespace std;
 
 UIWindow::UIWindow(int width, int height) {
 	render_window.create(sf::VideoMode(width, height), "simulator");
+	state = EditState::fire;
 	simulating = false;
+	radius = 10;
 	// инициализация клеток
 	tiles.resize(Constants::mesh_size);
 	for (int i = 0; i < Constants::mesh_size; i++) {
@@ -30,17 +32,61 @@ UIWindow::UIWindow(int width, int height) {
 }
 
 void UIWindow::HandleInput(sf::Event evnt) {
-	if (evnt.type == sf::Event::MouseButtonPressed) {
+	// обработка нажатий на сетку
+	//if (evnt.type == sf::Event::MouseButtonPressed) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		const int rect_size = render_window.getSize().x / Constants::mesh_size;
 		int x = sf::Mouse::getPosition(render_window).x / rect_size;
 		int y = sf::Mouse::getPosition(render_window).y / rect_size - 50;
+
 		if (y > -1) {
-			tiles[y][x]->state = BurnState::on_fire;
-			rectangles[x][y].setFillColor(sf::Color::Red);
+			int x_min = (x - radius > 0) ? x - radius : 0;
+			int x_max = (x + radius < Constants::mesh_size) ? x + radius : Constants::mesh_size;
+			int y_min = (y - radius > 0) ? y - radius : 0;
+			int y_max = (y + radius < Constants::mesh_size) ? y + radius : Constants::mesh_size;
+
+			BurnState st = BurnState::not_burned;
+			sf::Color clr;
+			Tile tl;
+
+			switch (state) {
+			case EditState::fire:
+				st = BurnState::on_fire;
+				clr = sf::Color::Red;
+				break;
+			case EditState::empty:
+				st = BurnState::not_burned;
+				tl = Tile::empty;
+				clr = sf::Color::White;
+				break;
+			case EditState::water:
+				st = BurnState::not_burned;
+				tl = Tile::water;
+				clr = sf::Color::Blue;
+				break;
+			case EditState::forest:
+				st = BurnState::not_burned;
+				tl = Tile::forest;
+				clr = sf::Color::Green;
+				break;
+			}
+
+			// когда определено состояние, изменяем клетки в радиусе окружности
+			for (int i = x_min; i < x_max; i++) {
+				for (int j = y_min; j < y_max; j++) {
+					if (((i - x) * (i - x)) + ((j - y) * (j - y)) < (radius * radius)) {
+						tiles[j][i]->state = st;
+						rectangles[i][j].setFillColor(clr);
+						if (st != BurnState::on_fire) {
+							tiles[j][i]->type = tl;
+						}
+					}
+				}
+			}
 		}
 	}
 	
-
+	// обработка нажатий на кнопку
 	for (auto& button : buttons) {
 		button.HandleInput(evnt);
 	}

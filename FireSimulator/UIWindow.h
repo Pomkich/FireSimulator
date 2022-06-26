@@ -6,6 +6,7 @@
 #include "Cell.h"
 #include "Calculating.h"
 #include <iostream>
+#include <thread>
 
 enum class EditState {
 	fire, water, empty, forest
@@ -17,8 +18,9 @@ private:
 	std::vector<std::vector<std::shared_ptr<Cell>>> tiles;
 	std::vector<std::vector<sf::RectangleShape>> rectangles;
 	std::vector<std::pair<int, int>> fire_points;
-	EditState state; 
+	EditState state;
 	bool simulating;
+	int radius;
 
 	sf::RenderWindow render_window;
 	std::vector<UIButton> buttons;

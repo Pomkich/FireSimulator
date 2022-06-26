@@ -15,19 +15,19 @@ void Simulate(sf::Event, std::weak_ptr<UIWindow> window) {
 }
 
 void SetForest(sf::Event, std::weak_ptr<UIWindow> window) {
-
+	window.lock()->SetEditState(EditState::forest);
 }
 
 void SetWater(sf::Event, std::weak_ptr<UIWindow> window) {
-
+	window.lock()->SetEditState(EditState::water);
 }
 
 void SetEmpty(sf::Event, std::weak_ptr<UIWindow> window) {
-	
+	window.lock()->SetEditState(EditState::empty);
 }
 
 void SetFire(sf::Event, std::weak_ptr<UIWindow> window) {
-
+	window.lock()->SetEditState(EditState::fire);
 }
 
 int main() {

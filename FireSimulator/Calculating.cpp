@@ -32,7 +32,8 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 			double rotated_y = (double(y - y_burn) / 100 - c * sin(wind_angle * Constants::pi / 180)) * cos(wind_angle * Constants::pi / 180) -
 				(double(x - x_burn) / 100 - c * cos(wind_angle * Constants::pi / 180)) * sin(wind_angle * Constants::pi / 180);
 
-			if (tiles[y][x]->state == BurnState::not_burned && (pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
+			if (tiles[y][x]->state == BurnState::not_burned && tiles[y][x]->type == Tile::forest && 
+				(pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
 				tiles[y][x]->state = BurnState::on_fire;
 			}
 		}
