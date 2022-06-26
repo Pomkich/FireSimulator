@@ -6,7 +6,6 @@
 #include "Cell.h"
 #include "Calculating.h"
 #include <iostream>
-#include <thread>
 
 enum class EditState {
 	fire, water, empty, forest

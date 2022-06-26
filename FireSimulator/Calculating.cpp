@@ -27,12 +27,13 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 
 	for (int y = height_min; y < height_max; y++) {
 		for (int x = width_min; x < width_max; x++) {
+			if (tiles[y][x]->state != BurnState::not_burned) continue;	// если уже сгорела, нет смысла проверять
 			double rotated_x = (double(x - x_burn) / 100 - c * cos(wind_angle * Constants::pi / 180)) * cos(wind_angle * Constants::pi / 180) + // поворот в сторону направления ветра
 				(double(y - y_burn) / 100 - c * sin(wind_angle * Constants::pi / 180)) * sin(wind_angle * Constants::pi / 180);
 			double rotated_y = (double(y - y_burn) / 100 - c * sin(wind_angle * Constants::pi / 180)) * cos(wind_angle * Constants::pi / 180) -
 				(double(x - x_burn) / 100 - c * cos(wind_angle * Constants::pi / 180)) * sin(wind_angle * Constants::pi / 180);
 
-			if (tiles[y][x]->state == BurnState::not_burned && tiles[y][x]->type == Tile::forest && 
+			if (tiles[y][x]->type == Tile::forest && 
 				(pow(rotated_y, 2) / pow(a, 2) + pow(rotated_x, 2) / pow(b, 2)) <= 1) {
 				tiles[y][x]->state = BurnState::on_fire;
 			}
