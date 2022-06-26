@@ -30,6 +30,22 @@ void SetFire(sf::Event, std::weak_ptr<UIWindow> window) {
 	window.lock()->SetEditState(EditState::fire);
 }
 
+void IncreaseWindSpeed(sf::Event, std::weak_ptr<UIWindow> window) {
+	window.lock()->ChangeWindSpeed(1);
+}
+
+void DecreaseWindSpeed(sf::Event, std::weak_ptr<UIWindow> window) {
+	window.lock()->ChangeWindSpeed(-1);
+}
+
+void IncreaseWindAngle(sf::Event, std::weak_ptr<UIWindow> window) {
+	window.lock()->ChangeWindAngle(15);
+}
+
+void DecreaseWindAngle(sf::Event, std::weak_ptr<UIWindow> window) {
+	window.lock()->ChangeWindAngle(-15);
+}
+
 int main() {
 	shared_ptr<UIWindow> wnd = make_shared<UIWindow>(600, 700);
 	{
@@ -72,6 +88,38 @@ int main() {
 		forest.SetColor(sf::Color::Green);
 		forest.SetInputHandler(&SetForest);
 		wnd->AddButton(forest);
+
+		UIButton increase_wind_speed(wnd);
+		increase_wind_speed.SetSize(30, 30);
+		increase_wind_speed.SetTitle("simulate");
+		increase_wind_speed.SetPos(550, 20);
+		increase_wind_speed.SetColor(sf::Color::White);
+		increase_wind_speed.SetInputHandler(&IncreaseWindSpeed);
+		wnd->AddButton(increase_wind_speed);
+
+		UIButton decrease_wind_speed(wnd);
+		decrease_wind_speed.SetSize(30, 30);
+		decrease_wind_speed.SetTitle("simulate");
+		decrease_wind_speed.SetPos(500, 20);
+		decrease_wind_speed.SetColor(sf::Color::Black);
+		decrease_wind_speed.SetInputHandler(&DecreaseWindSpeed);
+		wnd->AddButton(decrease_wind_speed);
+
+		UIButton increase_wind_angle(wnd);
+		increase_wind_angle.SetSize(30, 30);
+		increase_wind_angle.SetTitle("simulate");
+		increase_wind_angle.SetPos(550, 60);
+		increase_wind_angle.SetColor(sf::Color::White);
+		increase_wind_angle.SetInputHandler(&IncreaseWindAngle);
+		wnd->AddButton(increase_wind_angle);
+
+		UIButton decrease_wind_angle(wnd);
+		decrease_wind_angle.SetSize(30, 30);
+		decrease_wind_angle.SetTitle("simulate");
+		decrease_wind_angle.SetPos(500, 60);
+		decrease_wind_angle.SetColor(sf::Color::Black);
+		decrease_wind_angle.SetInputHandler(&DecreaseWindAngle);
+		wnd->AddButton(decrease_wind_angle);
 	}
 	wnd->Run();
 }

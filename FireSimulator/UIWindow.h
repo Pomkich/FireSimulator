@@ -20,6 +20,8 @@ private:
 	EditState state;
 	bool simulating;
 	int radius;
+	int wind_speed;
+	int wind_angle;
 
 	sf::RenderWindow render_window;
 	std::vector<UIButton> buttons;
@@ -29,6 +31,8 @@ public:
 	void AddButton(UIButton new_button);
 	void StartSimulation();
 	void SetEditState(EditState st);
+	void ChangeWindAngle(int angle);
+	void ChangeWindSpeed(int speed);
 	void Run();
 
 private:

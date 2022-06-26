@@ -7,14 +7,17 @@ UIWindow::UIWindow(int width, int height) {
 	state = EditState::fire;
 	simulating = false;
 	radius = 10;
+	wind_speed = 0;
+	wind_angle = 0;
+	
 	// инициализация клеток
 	tiles.resize(Constants::mesh_size);
 	for (int i = 0; i < Constants::mesh_size; i++) {
 		tiles[i].resize(Constants::mesh_size);
 		for (int j = 0; j < Constants::mesh_size; j++) {
 			tiles[i][j] = make_shared<Cell>(Tile::forest);
-			tiles[i][j]->wind_angle = 45;
-			tiles[i][j]->wind_speed = 5;
+			tiles[i][j]->wind_angle = 0;
+			tiles[i][j]->wind_speed = 0;
 		}
 	}
 
@@ -33,7 +36,6 @@ UIWindow::UIWindow(int width, int height) {
 
 void UIWindow::HandleInput(sf::Event evnt) {
 	// обработка нажатий на сетку
-	//if (evnt.type == sf::Event::MouseButtonPressed) {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		const int rect_size = render_window.getSize().x / Constants::mesh_size;
 		int x = sf::Mouse::getPosition(render_window).x / rect_size;
@@ -93,11 +95,38 @@ void UIWindow::HandleInput(sf::Event evnt) {
 }
 
 void UIWindow::StartSimulation() {
-	simulating = true;
+	if (simulating == true) {
+		simulating = false;
+	}
+	else {
+		simulating = true;
+	}
 }
 
 void UIWindow::SetEditState(EditState st) {
 	state = st;
+}
+
+void UIWindow::ChangeWindAngle(int angle) {
+	wind_angle += angle;
+	cout << wind_angle << endl;
+	for (int i = 0; i < Constants::mesh_size; i++) {
+		tiles[i].resize(Constants::mesh_size);
+		for (int j = 0; j < Constants::mesh_size; j++) {
+			tiles[i][j]->wind_angle = wind_angle;
+		}
+	}
+}
+
+void UIWindow::ChangeWindSpeed(int speed) {
+	wind_speed += speed;
+	cout << wind_speed << endl;
+	for (int i = 0; i < Constants::mesh_size; i++) {
+		tiles[i].resize(Constants::mesh_size);
+		for (int j = 0; j < Constants::mesh_size; j++) {
+			tiles[i][j]->wind_speed = wind_speed;
+		}
+	}
 }
 
 void UIWindow::Run() {

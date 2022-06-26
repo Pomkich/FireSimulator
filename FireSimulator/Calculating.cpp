@@ -6,7 +6,7 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 	double a, b, c;				// мала€ полуось (a), больша€ полуось(b), рассто€ние до центра эллипса(c) от начальной точки горени€
 	double wind_factor;			// скорость распространени€ фронта пожара по модели –отермела
 	double wind_speed = tiles[x_burn][y_burn]->wind_speed;		// скорость ветра м/с
-	double wind_angle = tiles[x_burn][y_burn]->wind_angle;		// направление ветра, рассчитываемое в градусах
+	double wind_angle = -tiles[x_burn][y_burn]->wind_angle;		// направление ветра, рассчитываемое в градусах
 
 	wind_factor = Constants::C * pow(wind_speed, Constants::B) * 
 		pow((Constants::packing_ratio / Constants::opm_packing_ratio), -Constants::E);
