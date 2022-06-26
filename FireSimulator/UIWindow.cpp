@@ -111,7 +111,6 @@ void UIWindow::ChangeWindAngle(int angle) {
 	wind_angle += angle;
 	cout << wind_angle << endl;
 	for (int i = 0; i < Constants::mesh_size; i++) {
-		tiles[i].resize(Constants::mesh_size);
 		for (int j = 0; j < Constants::mesh_size; j++) {
 			tiles[i][j]->wind_angle = wind_angle;
 		}
@@ -122,7 +121,6 @@ void UIWindow::ChangeWindSpeed(int speed) {
 	wind_speed += speed;
 	cout << wind_speed << endl;
 	for (int i = 0; i < Constants::mesh_size; i++) {
-		tiles[i].resize(Constants::mesh_size);
 		for (int j = 0; j < Constants::mesh_size; j++) {
 			tiles[i][j]->wind_speed = wind_speed;
 		}
