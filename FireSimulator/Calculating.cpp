@@ -20,10 +20,10 @@ void calculateFront(vector<vector<shared_ptr<Cell>>>& tiles, int x_burn, int y_b
 	c = b - (wind_factor / LB);
 
 	// проверяем только в 1/10 от площади а не всей сетки для оптимизации
-	int height_min = (y_burn - 20) > 0 ? y_burn - 20 : 0;
-	int height_max = (y_burn + 20) < Constants::mesh_size ? y_burn + 20 : Constants::mesh_size;
-	int width_min = (x_burn - 20) > 0 ? x_burn - 20 : 0;
-	int width_max = (x_burn + 20) < Constants::mesh_size ? x_burn + 20 : Constants::mesh_size;
+	int height_min = (y_burn - 10) > 0 ? y_burn - 10 : 0;
+	int height_max = (y_burn + 10) < Constants::mesh_size ? y_burn + 10 : Constants::mesh_size;
+	int width_min = (x_burn - 10) > 0 ? x_burn - 10 : 0;
+	int width_max = (x_burn + 10) < Constants::mesh_size ? x_burn + 10 : Constants::mesh_size;
 
 	for (int y = height_min; y < height_max; y++) {
 		for (int x = width_min; x < width_max; x++) {

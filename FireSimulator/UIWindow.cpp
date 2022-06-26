@@ -12,7 +12,7 @@ UIWindow::UIWindow(int width, int height) {
 		for (int j = 0; j < Constants::mesh_size; j++) {
 			tiles[i][j] = make_shared<Cell>(Tile::forest);
 			tiles[i][j]->wind_angle = 45;
-			tiles[i][j]->wind_speed = 4;
+			tiles[i][j]->wind_speed = 5;
 		}
 	}
 
@@ -30,6 +30,17 @@ UIWindow::UIWindow(int width, int height) {
 }
 
 void UIWindow::HandleInput(sf::Event evnt) {
+	if (evnt.type == sf::Event::MouseButtonPressed) {
+		const int rect_size = render_window.getSize().x / Constants::mesh_size;
+		int x = sf::Mouse::getPosition(render_window).x / rect_size;
+		int y = sf::Mouse::getPosition(render_window).y / rect_size - 50;
+		if (y > -1) {
+			tiles[y][x]->state = BurnState::on_fire;
+			rectangles[x][y].setFillColor(sf::Color::Red);
+		}
+	}
+	
+
 	for (auto& button : buttons) {
 		button.HandleInput(evnt);
 	}
@@ -40,10 +51,6 @@ void UIWindow::StartSimulation() {
 }
 
 void UIWindow::Run() {
-	// TESTING
-	fire_points.push_back(make_pair(100, 100));
-	// END TESTING
-
 	while (render_window.isOpen()) {
 		sf::Event evnt;
 		while (render_window.pollEvent(evnt)) {

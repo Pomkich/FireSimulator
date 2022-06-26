@@ -5,6 +5,7 @@
 #include <vector>
 #include "Cell.h"
 #include "Calculating.h"
+#include <iostream>
 
 class UIWindow
 {
