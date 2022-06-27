@@ -25,6 +25,10 @@ private:
 
 	sf::RenderWindow render_window;
 	std::vector<UIButton> buttons;
+	sf::Font font;
+	sf::Text wind_spd_title;
+	sf::Text wind_agl_title;
+
 
 public:
 	UIWindow(int width, int height);

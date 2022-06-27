@@ -9,7 +9,7 @@ UIWindow::UIWindow(int width, int height) {
 	radius = 10;
 	wind_speed = 0;
 	wind_angle = 0;
-	
+
 	// инициализация клеток
 	tiles.resize(Constants::mesh_size);
 	for (int i = 0; i < Constants::mesh_size; i++) {
@@ -32,6 +32,23 @@ UIWindow::UIWindow(int width, int height) {
 			rectangles[i][j].setSize(sf::Vector2f(rect_size, rect_size));
 		}
 	}
+
+	if (font.loadFromFile("arial.ttf")) {
+
+	}
+
+	wind_spd_title.setFont(font);
+	wind_agl_title.setFont(font);
+
+	wind_spd_title.setCharacterSize(20);
+	wind_spd_title.setPosition(sf::Vector2f(510, 10));
+	wind_spd_title.setString("0");
+	wind_spd_title.setFillColor(sf::Color::Black);
+
+	wind_agl_title.setCharacterSize(20);
+	wind_agl_title.setPosition(sf::Vector2f(510, 65));
+	wind_agl_title.setString("0");
+	wind_agl_title.setFillColor(sf::Color::Black);
 }
 
 void UIWindow::HandleInput(sf::Event evnt) {
@@ -109,6 +126,7 @@ void UIWindow::SetEditState(EditState st) {
 
 void UIWindow::ChangeWindAngle(int angle) {
 	wind_angle += angle;
+	wind_agl_title.setString(std::to_string(wind_angle));
 	cout << wind_angle << endl;
 	for (int i = 0; i < Constants::mesh_size; i++) {
 		for (int j = 0; j < Constants::mesh_size; j++) {
@@ -119,6 +137,10 @@ void UIWindow::ChangeWindAngle(int angle) {
 
 void UIWindow::ChangeWindSpeed(int speed) {
 	wind_speed += speed;
+	if (wind_speed < 0) {
+		wind_speed = 0;
+	}
+	wind_spd_title.setString(std::to_string(wind_speed));
 	cout << wind_speed << endl;
 	for (int i = 0; i < Constants::mesh_size; i++) {
 		for (int j = 0; j < Constants::mesh_size; j++) {
@@ -142,6 +164,9 @@ void UIWindow::Run() {
 		for (auto& button : buttons) {
 			render_window.draw(button.GetRect());
 		}
+
+		render_window.draw(wind_spd_title);
+		render_window.draw(wind_agl_title);
 
 		// отрисовка клеток
 		for (int i = 0; i < Constants::mesh_size; i++) {
