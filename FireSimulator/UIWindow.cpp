@@ -141,7 +141,6 @@ void UIWindow::Run() {
 		// отрисовка кнопок
 		for (auto& button : buttons) {
 			render_window.draw(button.GetRect());
-			render_window.draw(button.GetTitle());
 		}
 
 		// отрисовка клеток

@@ -51,7 +51,6 @@ int main() {
 	{
 		UIButton simulate(wnd);
 		simulate.SetSize(75, 50);
-		simulate.SetTitle("simulate");
 		simulate.SetPos(275, 5);
 		simulate.SetColor(sf::Color::Green);
 		simulate.SetInputHandler(&Simulate);
@@ -59,7 +58,6 @@ int main() {
 
 		UIButton fire(wnd);
 		fire.SetSize(30, 30);
-		fire.SetTitle("simulate");
 		fire.SetPos(100, 5);
 		fire.SetColor(sf::Color::Red);
 		fire.SetInputHandler(&SetFire);
@@ -67,7 +65,6 @@ int main() {
 
 		UIButton water(wnd);
 		water.SetSize(30, 30);
-		water.SetTitle("simulate");
 		water.SetPos(160, 5);
 		water.SetColor(sf::Color::Blue);
 		water.SetInputHandler(&SetWater);
@@ -75,7 +72,6 @@ int main() {
 
 		UIButton empty(wnd);
 		empty.SetSize(30, 30);
-		empty.SetTitle("simulate");
 		empty.SetPos(100, 65);
 		empty.SetColor(sf::Color::White);
 		empty.SetInputHandler(&SetEmpty);
@@ -83,7 +79,6 @@ int main() {
 
 		UIButton forest(wnd);
 		forest.SetSize(30, 30);
-		forest.SetTitle("simulate");
 		forest.SetPos(160, 65);
 		forest.SetColor(sf::Color::Green);
 		forest.SetInputHandler(&SetForest);
@@ -91,32 +86,28 @@ int main() {
 
 		UIButton increase_wind_speed(wnd);
 		increase_wind_speed.SetSize(30, 30);
-		increase_wind_speed.SetTitle("simulate");
-		increase_wind_speed.SetPos(550, 20);
+		increase_wind_speed.SetPos(550, 10);
 		increase_wind_speed.SetColor(sf::Color::White);
 		increase_wind_speed.SetInputHandler(&IncreaseWindSpeed);
 		wnd->AddButton(increase_wind_speed);
 
 		UIButton decrease_wind_speed(wnd);
 		decrease_wind_speed.SetSize(30, 30);
-		decrease_wind_speed.SetTitle("simulate");
-		decrease_wind_speed.SetPos(500, 20);
+		decrease_wind_speed.SetPos(450, 10);
 		decrease_wind_speed.SetColor(sf::Color::Black);
 		decrease_wind_speed.SetInputHandler(&DecreaseWindSpeed);
 		wnd->AddButton(decrease_wind_speed);
 
 		UIButton increase_wind_angle(wnd);
 		increase_wind_angle.SetSize(30, 30);
-		increase_wind_angle.SetTitle("simulate");
-		increase_wind_angle.SetPos(550, 60);
+		increase_wind_angle.SetPos(550, 65);
 		increase_wind_angle.SetColor(sf::Color::White);
 		increase_wind_angle.SetInputHandler(&IncreaseWindAngle);
 		wnd->AddButton(increase_wind_angle);
 
 		UIButton decrease_wind_angle(wnd);
 		decrease_wind_angle.SetSize(30, 30);
-		decrease_wind_angle.SetTitle("simulate");
-		decrease_wind_angle.SetPos(500, 60);
+		decrease_wind_angle.SetPos(450, 65);
 		decrease_wind_angle.SetColor(sf::Color::Black);
 		decrease_wind_angle.SetInputHandler(&DecreaseWindAngle);
 		wnd->AddButton(decrease_wind_angle);

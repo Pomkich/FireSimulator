@@ -21,9 +21,6 @@ void UIButton::SetColor(sf::Color color) {
 	rect.setFillColor(color);
 }
 
-void UIButton::SetTitle(std::string str) {
-	title.setString(str);
-}
 
 void UIButton::SetInputHandler(void (*inp_hndl)(sf::Event, std::weak_ptr<UIWindow> window)) {
 	input_handler = inp_hndl;
@@ -31,10 +28,6 @@ void UIButton::SetInputHandler(void (*inp_hndl)(sf::Event, std::weak_ptr<UIWindo
 
 sf::RectangleShape& UIButton::GetRect() {
 	return rect;
-}
-
-sf::Text& UIButton::GetTitle() {
-	return title;
 }
 
 void UIButton::HandleInput(sf::Event evnt) {
